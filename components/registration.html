@@ -1,0 +1,600 @@
+<div class="tab-pane fade" id="registration-tab">
+    <h1 class="text-center">ER Wait Time - Patient Registration</h1>
+    <div class="registration-container">
+        <form id="registrationForm" class="needs-validation" novalidate>
+            <!-- Personal Information -->
+            <div class="form-section">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="firstName">First Name:</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="lastName">Last Name:</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="dateOfBirth">Date of Birth:</label>
+                            <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" 
+                                   placeholder="mm/dd/yyyy" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="phone">Phone Number:</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" 
+                                   placeholder="+1234567890" 
+                                   pattern="^\+?[1-9]\d{1,14}$"
+                                   title="Include country code (e.g., +1 for USA)"
+                                   required>
+                            <small class="form-text text-muted">Include country code (e.g., +1 for USA)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="whatsapp">WhatsApp Number:</label>
+                    <input type="tel" class="form-control" id="whatsapp" name="whatsapp" 
+                           placeholder="+1234567890">
+                    <small class="form-text text-muted">Optional - Include country code</small>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="address">Full Address:</label>
+                    <textarea class="form-control" id="address" name="address" rows="3" 
+                              placeholder="Street Address&#10;City, State/Province&#10;Country" required></textarea>
+                </div>
+            </div>
+
+            <!-- Symptoms Section -->
+            <div class="form-section mt-4">
+                <h3>Current Symptoms</h3>
+                <div class="symptom-categories">
+                    <!-- Urgent Symptoms -->
+                    <div class="symptom-category">
+                        <h4>Urgent Symptoms</h4>
+                        <div class="symptom-bubbles">
+                            <div class="symptom-bubble critical" data-symptom="chest-pain">
+                                <div class="symptom-name">Chest Pain</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble critical" data-symptom="shortness-breath">
+                                <div class="symptom-name">Shortness of Breath</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Common Symptoms -->
+                    <div class="symptom-category">
+                        <h4>Common Symptoms</h4>
+                        <div class="symptom-bubbles">
+                            <div class="symptom-bubble" data-symptom="headache">
+                                <div class="symptom-name">Headache</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="fever">
+                                <div class="symptom-name">Fever</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="cough">
+                                <div class="symptom-name">Cough</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="sore-throat">
+                                <div class="symptom-name">Sore Throat</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="nausea">
+                                <div class="symptom-name">Nausea</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Digestive Symptoms -->
+                    <div class="symptom-category">
+                        <h4>Digestive Symptoms</h4>
+                        <div class="symptom-bubbles">
+                            <div class="symptom-bubble" data-symptom="vomiting">
+                                <div class="symptom-name">Vomiting</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="diarrhea">
+                                <div class="symptom-name">Diarrhea</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="abdominal-pain">
+                                <div class="symptom-name">Abdominal Pain</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pain Symptoms -->
+                    <div class="symptom-category">
+                        <h4>Pain Symptoms</h4>
+                        <div class="symptom-bubbles">
+                            <div class="symptom-bubble" data-symptom="back-pain">
+                                <div class="symptom-name">Back Pain</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="joint-pain">
+                                <div class="symptom-name">Joint Pain</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="muscle-pain">
+                                <div class="symptom-name">Muscle Pain</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Other Symptoms -->
+                    <div class="symptom-category">
+                        <h4>Other Symptoms</h4>
+                        <div class="symptom-bubbles">
+                            <div class="symptom-bubble" data-symptom="dizziness">
+                                <div class="symptom-name">Dizziness</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="fatigue">
+                                <div class="symptom-name">Fatigue</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="anxiety">
+                                <div class="symptom-name">Anxiety</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="depression">
+                                <div class="symptom-name">Depression</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="rash">
+                                <div class="symptom-name">Rash</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="itching">
+                                <div class="symptom-name">Itching</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="bleeding">
+                                <div class="symptom-name">Bleeding</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                            <div class="symptom-bubble" data-symptom="swelling">
+                                <div class="symptom-name">Swelling</div>
+                                <div class="severity-dots">
+                                    <span class="severity-dot" data-level="1"></span>
+                                    <span class="severity-dot" data-level="2"></span>
+                                    <span class="severity-dot" data-level="3"></span>
+                                    <span class="severity-dot" data-level="4"></span>
+                                    <span class="severity-dot" data-level="5"></span>
+                                    <span class="severity-dot" data-level="6"></span>
+                                    <span class="severity-dot" data-level="7"></span>
+                                    <span class="severity-dot" data-level="8"></span>
+                                    <span class="severity-dot" data-level="9"></span>
+                                    <span class="severity-dot" data-level="10"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Symptom Input -->
+                <div class="custom-symptom-input mt-3">
+                    <input type="text" class="form-control" id="customSymptom" placeholder="Type other symptoms...">
+                    <button type="button" class="btn btn-outline-primary" onclick="addCustomSymptom()">Add Symptom</button>
+                </div>
+            </div>
+
+            <!-- Medical History Section -->
+            <div class="form-section mt-4">
+                <h3>Medical History</h3>
+                
+                <div class="form-group">
+                    <label for="pmh">Past Medical History (PMH):</label>
+                    <textarea class="form-control" id="pmh" name="pmh" rows="3"></textarea>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="psh">Past Surgical History (PSH):</label>
+                    <textarea class="form-control" id="psh" name="psh" rows="3"></textarea>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="allergies">Allergies:</label>
+                    <textarea class="form-control" id="allergies" name="allergies" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="medications">Medication List:</label>
+                    <textarea class="form-control" id="medications" name="medications" rows="3"></textarea>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="socialHistory">Social History:</label>
+                    <textarea class="form-control" id="socialHistory" name="socialHistory" rows="3"></textarea>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="travelHistory">Travel History:</label>
+                    <textarea class="form-control" id="travelHistory" name="travelHistory" rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="form-actions mt-4">
+                <button type="submit" class="btn btn-primary btn-lg w-100">Submit Registration</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Initialize registration when the component is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof initializeRegistration === 'function') {
+            initializeRegistration();
+        }
+    });
+</script>
+
+<style>
+    .registration-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .form-section {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .symptoms-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .symptom-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .symptom-card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .symptom-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .symptom-header h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    .severity-indicator {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
+
+    .severity-dots {
+        display: flex;
+        gap: 2px;
+    }
+
+    .severity-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--border-color);
+        transition: all 0.2s ease;
+    }
+
+    .severity-dot.active {
+        background: var(--primary-color);
+    }
+
+    .severity-dot.active.mild {
+        background: #4CAF50;
+    }
+
+    .severity-dot.active.moderate {
+        background: #FFC107;
+    }
+
+    .severity-dot.active.severe {
+        background: #F44336;
+    }
+
+    .severity-slider {
+        width: 100%;
+        margin: 1rem 0;
+    }
+
+    .symptom-description {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    .error-message {
+        color: var(--danger-color);
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+    }
+
+    .alert-success {
+        background-color: var(--success-bg);
+        color: var(--success-color);
+        border: 1px solid var(--success-border);
+    }
+
+    .alert-error {
+        background-color: var(--danger-bg);
+        color: var(--danger-color);
+        border: 1px solid var(--danger-border);
+    }
+
+    @media (max-width: 768px) {
+        .registration-container {
+            padding: 1rem;
+        }
+
+        .form-section {
+            padding: 1rem;
+        }
+
+        .symptoms-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

@@ -1,0 +1,103 @@
+<div class="tab-pane fade" id="records-tab">
+    <div class="records-container">
+        <div class="records-header">
+            <h1>Medical Records</h1>
+            <div class="records-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search records..." id="recordSearch">
+                </div>
+                <select class="filter-select" id="statusFilter">
+                    <option value="all">All Status</option>
+                    <option value="completed">Completed</option>
+                    <option value="pending">Pending</option>
+                </select>
+                <select class="filter-select" id="dateFilter">
+                    <option value="all">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Symptoms</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="recordsTableBody">
+                    <!-- Sample records - Replace with dynamic data -->
+                    <tr>
+                        <td>2024-03-15</td>
+                        <td>09:30 AM</td>
+                        <td>
+                            <div class="symptoms-list">
+                                <span class="symptom-badge" style="--severity-color: #ffcdd2">Fever (High)</span>
+                                <span class="symptom-badge" style="--severity-color: #fff9c4">Cough (Mild)</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                        <td>
+                            <button class="btn btn-outline-primary btn-sm">View Details</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2024-03-14</td>
+                        <td>02:15 PM</td>
+                        <td>
+                            <div class="symptoms-list">
+                                <span class="symptom-badge" style="--severity-color: #fff9c4">Headache (Mild)</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>
+                            <button class="btn btn-outline-primary btn-sm">View Details</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="records-pagination">
+            <div class="records-info">
+                Showing 1-2 of 2 records
+            </div>
+            <div class="pagination-controls">
+                <button class="btn btn-outline-secondary btn-sm" disabled>Previous</button>
+                <button class="btn btn-outline-secondary btn-sm" disabled>Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Initialize records functionality
+function initializeRecords() {
+    // Add search functionality
+    document.getElementById('recordSearch').addEventListener('input', function(e) {
+        // Implement search logic here
+        console.log('Searching:', e.target.value);
+    });
+
+    // Add filter functionality
+    document.getElementById('statusFilter').addEventListener('change', function(e) {
+        // Implement status filter logic here
+        console.log('Status filter:', e.target.value);
+    });
+
+    document.getElementById('dateFilter').addEventListener('change', function(e) {
+        // Implement date filter logic here
+        console.log('Date filter:', e.target.value);
+    });
+}
+
+// Initialize when the component loads
+document.addEventListener('DOMContentLoaded', initializeRecords);
+</script> 

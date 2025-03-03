@@ -1,0 +1,37 @@
+<div class="tab-pane fade" id="chat-tab">
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2><i class="fas fa-robot"></i> Medical Assistant</h2>
+            <p class="typing-status" id="typingStatus"></p>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                <div class="message-content">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-text">
+                        Hello! I'm your medical assistant. How can I help you today?
+                    </div>
+                </div>
+                <div class="message-time">Just now</div>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <div class="input-group">
+                <input type="text" class="form-control" id="messageInput" placeholder="Type your message here...">
+                <button class="btn btn-primary send-button" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            <div class="chat-suggestions">
+                <div class="suggestion-chip" onclick="selectSuggestion(this)">What's my wait time?</div>
+                <div class="suggestion-chip" onclick="selectSuggestion(this)">Find nearest hospital</div>
+                <div class="suggestion-chip" onclick="selectSuggestion(this)">Emergency symptoms</div>
+                <div class="suggestion-chip" onclick="selectSuggestion(this)">Medical records</div>
+            </div>
+        </div>
+    </div>
+</div> 

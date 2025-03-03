@@ -1,0 +1,126 @@
+<!-- Directions Interface -->
+<div class="directions-container">
+    <h1 class="text-center">Find Nearest Hospital</h1>
+    
+    <!-- Address Input Form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="fromAddress" class="form-label">Your Location</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                    <input type="text" class="form-control" id="fromAddress" placeholder="Your current location...">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="toAddress" class="form-label">Hospital Location</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-hospital"></i></span>
+                    <input type="text" class="form-control" id="toAddress" placeholder="Select a hospital from below...">
+                </div>
+            </div>
+            <button class="btn btn-primary w-100" onclick="calculateAndDisplayRoute()">
+                <i class="fas fa-directions"></i> Get Directions
+            </button>
+        </div>
+    </div>
+
+    <!-- Directions Results -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div id="directionsPanel">
+                <div class="text-center text-muted">
+                    <i class="fas fa-info-circle"></i>
+                    Enter locations above to get directions
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nearby Hospitals -->
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title mb-3">
+                <i class="fas fa-hospital-alt"></i> Nearby Hospitals
+            </h2>
+            <div class="hospital-list">
+                <div class="loading">Finding nearby hospitals...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.directions-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.input-group-text {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+.route-summary {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.route-instructions {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.route-instructions ol {
+    padding-left: 20px;
+    color: var(--text-color);
+}
+
+.route-instructions li {
+    margin-bottom: 10px;
+    line-height: 1.4;
+    padding: 10px;
+    background-color: var(--bg-color);
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.hospital-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.hospital-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hospital-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.hospital-info h3 {
+    color: var(--text-color);
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.hospital-info p {
+    color: var(--text-color);
+    opacity: 0.8;
+    margin: 5px 0 0;
+}
+</style> 
