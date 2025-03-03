@@ -1,14 +1,20 @@
-// Tab components configuration
+// Tab components mapping
 const tabComponents = {
-    'chat-tab': 'components/chat.html',
-    'hospital-tab': 'components/hospital.html',
-    'registration-tab': 'components/registration.html',
-    'records-tab': 'components/records.html',
-    'directions-tab': 'components/directions.html'
+    'chat-tab': './components/chat.html',
+    'registration-tab': './components/registration.html',
+    'records-tab': './components/records.html',
+    'hospital-tab': './components/hospital.html',
+    'directions-tab': './components/directions.html'
 };
 
 // Global variable to track if TomTom is loaded
 let isTomTomLoaded = false;
+
+// Function to get the correct path for components
+function getComponentPath(path) {
+    const baseUrl = window.baseUrl || '';
+    return `${baseUrl}${path}`;
+}
 
 // Function to load TomTom SDK
 async function loadTomTomSDK() {
@@ -48,72 +54,17 @@ async function loadTomTomSDK() {
     });
 }
 
-// Function to load tab content
-async function loadTabContent(tabId) {
-    console.log('Loading content for tab:', tabId);
+// Load component content
+async function loadComponent(tabId) {
+    const componentPath = getComponentPath(tabComponents[tabId]);
     try {
-        const tabPane = document.getElementById(tabId);
-        if (!tabPane) {
-            console.error('Tab pane not found:', tabId);
-            return;
-        }
-
-        // Always load content for now (remove the data-loaded check temporarily)
-        const response = await fetch(tabComponents[tabId]);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        const response = await fetch(componentPath);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const content = await response.text();
-        console.log('Content loaded:', content.substring(0, 100) + '...');
-        
-        // Insert the content
-        tabPane.innerHTML = content;
-        
-        // Make sure the tab is visible
-        tabPane.classList.add('show', 'active');
-        
-        // Initialize specific tab functionality
-        console.log('Initializing tab functionality for:', tabId);
-        switch(tabId) {
-            case 'chat-tab':
-                if (typeof initializeChat === 'function') {
-                    initializeChat();
-                }
-                break;
-            case 'hospital-tab':
-                if (typeof initializeMap === 'function') {
-                    setTimeout(initializeMap, 100);
-                }
-                break;
-            case 'directions-tab':
-                if (typeof initializeDirections === 'function') {
-                    setTimeout(initializeDirections, 100);
-                }
-                break;
-            case 'registration-tab':
-                if (typeof initializeRegistration === 'function') {
-                    initializeRegistration();
-                }
-                break;
-            case 'records-tab':
-                if (typeof initializeRecords === 'function') {
-                    initializeRecords();
-                }
-                break;
-        }
+        document.getElementById(tabId).innerHTML = content;
     } catch (error) {
-        console.error('Error loading tab content:', error);
-        const tabPane = document.getElementById(tabId);
-        if (tabPane) {
-            tabPane.innerHTML = `
-                <div class="alert alert-danger">
-                    <h4 class="alert-heading">Error loading content</h4>
-                    <p>${error.message}</p>
-                    <hr>
-                    <p class="mb-0">Please try refreshing the page or contact support if the problem persists.</p>
-                </div>
-            `;
-        }
+        console.error('Error loading component:', error);
+        document.getElementById(tabId).innerHTML = `<div class="alert alert-danger">Error loading content. Please try again.</div>`;
     }
 }
 
@@ -173,10 +124,19 @@ async function handleTabChange(event) {
 document.addEventListener('DOMContentLoaded', function() {
     initializeTheme();
     
-    // Add tab change listener
-    const tabElements = document.querySelectorAll('[data-bs-toggle="tab"]');
-    tabElements.forEach(tab => {
-        tab.addEventListener('shown.bs.tab', handleTabChange);
+    // Load initial active tab
+    const activeTab = document.querySelector('.tab-pane.active');
+    if (activeTab) {
+        loadComponent(activeTab.id);
+    }
+
+    // Setup tab change listeners
+    const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+    tabs.forEach(tab => {
+        tab.addEventListener('shown.bs.tab', function (event) {
+            const targetId = event.target.getAttribute('data-bs-target').substring(1);
+            loadComponent(targetId);
+        });
     });
 });
 
