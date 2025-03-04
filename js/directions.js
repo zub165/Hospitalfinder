@@ -12,9 +12,32 @@ const tomtomFetchOptions = {
     mode: 'cors'
 };
 
+// Initialize directions when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    const directionsTab = document.getElementById('directions-tab');
+    if (directionsTab) {
+        directionsTab.addEventListener('shown.bs.tab', () => {
+            console.log('Directions tab shown, initializing...');
+            initializeDirections();
+        });
+    }
+});
+
 // Initialize directions functionality
 function initializeDirections() {
     console.log('Initializing directions tab...');
+    
+    const fromAddress = document.getElementById('fromAddress');
+    const toAddress = document.getElementById('toAddress');
+    const directionsPanel = document.getElementById('directionsPanel');
+    
+    if (!fromAddress || !toAddress || !directionsPanel) {
+        console.error('Directions map container not found');
+        return;
+    }
+
+    // Initialize the map first
+    initializeDirectionsMap();
     
     // Get user's location when the tab loads
     if (navigator.geolocation) {
@@ -24,11 +47,15 @@ function initializeDirections() {
             reverseGeocode(latitude, longitude);
         }, error => {
             console.error('Geolocation error:', error);
-            document.getElementById('fromAddress').placeholder = 'Enter your location...';
+            if (fromAddress) {
+                fromAddress.placeholder = 'Enter your location...';
+            }
         });
     } else {
         console.log('Geolocation not supported');
-        document.getElementById('fromAddress').placeholder = 'Enter your location...';
+        if (fromAddress) {
+            fromAddress.placeholder = 'Enter your location...';
+        }
     }
 
     // Load nearby hospitals
@@ -285,40 +312,58 @@ function displayRouteInfo(route) {
 
 function initializeDirectionsMap() {
     if (!window.tt) {
-        console.log('TomTom SDK not loaded yet');
+        console.error('TomTom SDK not loaded yet');
+        showError('Map service is still loading. Please try again in a moment.');
+        return;
+    }
+
+    if (!window.tomtomConfig?.apiKey) {
+        console.error('TomTom API key not configured');
+        showError('Map service is not properly configured. Please check your API key.');
         return;
     }
 
     // Check if map container exists
     const mapContainer = document.getElementById('directionsMap');
     if (!mapContainer) {
-        console.log('Directions map container not found');
+        console.error('Directions map container not found');
         return;
     }
 
     // Initialize map only if it hasn't been initialized yet
     if (!directionsMap) {
-        directionsMap = tt.map({
-            key: window.tomtomApiKey,
-            container: 'directionsMap',
-            center: [-73.935242, 40.730610], // Default to New York
-            zoom: 13
-        });
-
-        // Add controls
-        directionsMap.addControl(new tt.NavigationControl());
-        directionsMap.addControl(new tt.FullscreenControl());
-
-        // Get user location
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
-                const { latitude, longitude } = position.coords;
-                directionsMap.setCenter([longitude, latitude]);
-                reverseGeocode(latitude, longitude);
-            }, error => {
-                console.error('Error getting location:', error);
-                showError('Unable to get your location. Please enter your address manually.');
+        try {
+            directionsMap = tt.map({
+                key: window.tomtomConfig.apiKey,
+                container: 'directionsMap',
+                center: window.tomtomConfig.defaultCenter || [-73.935242, 40.730610],
+                zoom: window.tomtomConfig.defaultZoom || 13,
+                language: window.tomtomConfig.language || 'en-GB'
             });
+
+            // Add controls
+            directionsMap.addControl(new tt.NavigationControl());
+            directionsMap.addControl(new tt.FullscreenControl());
+
+            console.log('Directions map initialized successfully');
+
+            // Get user location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const { latitude, longitude } = position.coords;
+                        directionsMap.setCenter([longitude, latitude]);
+                        reverseGeocode(latitude, longitude);
+                    },
+                    error => {
+                        console.error('Error getting location:', error);
+                        showError('Unable to get your location. Please enter your address manually.');
+                    }
+                );
+            }
+        } catch (error) {
+            console.error('Error initializing directions map:', error);
+            showError('Failed to initialize map. Please refresh the page and try again.');
         }
     }
 }
@@ -331,11 +376,4 @@ function showError(message) {
             ${message}
         </div>
     `;
-}
-
-// Initialize when the directions tab is shown
-document.addEventListener('shown.bs.tab', function(event) {
-    if (event.target.getAttribute('data-bs-target') === '#directions-tab') {
-        initializeDirectionsMap();
-    }
-}); 
+} 

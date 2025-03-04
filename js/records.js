@@ -130,12 +130,15 @@ function updatePagination() {
     const startRecord = (currentPage - 1) * recordsPerPage + 1;
     const endRecord = Math.min(startRecord + recordsPerPage - 1, totalRecords);
 
-    document.getElementById('recordsShowing').textContent = `${startRecord}-${endRecord}`;
-    document.getElementById('recordsTotal').textContent = totalRecords;
+    // Update records info
+    const recordsInfo = document.querySelector('.records-info');
+    if (recordsInfo) {
+        recordsInfo.textContent = `Showing ${startRecord}-${endRecord} of ${totalRecords} records`;
+    }
 
-    // Fix button selectors
-    const prevButton = document.querySelector('button[onclick="previousPage()"]');
-    const nextButton = document.querySelector('button[onclick="nextPage()"]');
+    // Update pagination buttons
+    const prevButton = document.querySelector('.pagination-controls button:first-child');
+    const nextButton = document.querySelector('.pagination-controls button:last-child');
     
     if (prevButton) {
         prevButton.disabled = currentPage === 1;

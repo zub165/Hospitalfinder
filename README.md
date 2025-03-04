@@ -1,30 +1,29 @@
 # Hospital Finder
 
-A modern web application to help patients find nearby hospitals, check ER wait times, and register for medical services.
+A modern web application to help users find nearby hospitals, check ER wait times, and get emergency medical assistance.
 
 ## Features
 
-- **Smart Chat Interface**: AI-powered chatbot for quick assistance and wait time estimates
-- **Patient Registration**: Detailed registration form with symptom severity tracking
-- **Medical Records**: View and manage patient medical records
-- **Hospital Locator**: Find nearby hospitals using TomTom Maps integration
-- **Directions**: Get real-time directions to the nearest hospital
-- **Dark/Light Mode**: Supports both dark and light themes for better user experience
+- 🏥 Find nearby hospitals and emergency rooms
+- ⏱️ Real-time ER wait time estimates
+- 🚑 Emergency symptom checker and response system
+- 🗺️ Turn-by-turn directions to medical facilities
+- 💬 Intelligent chatbot for medical assistance
+- 👤 User profile and medical history management
 
-## Technologies Used
+## Getting Started
 
-- HTML5, CSS3, JavaScript
-- Bootstrap 5.3.0
-- Font Awesome 6.0.0
-- TomTom Maps API
-- Node.js (for proxy server)
+### Prerequisites
 
-## Setup
+- Node.js (v14 or higher)
+- npm (v6 or higher)
+
+### Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/zub165/Hospitalfinder.git
-cd Hospitalfinder
+git clone https://github.com/yourusername/hospitalfinder.git
+cd hospitalfinder
 ```
 
 2. Install dependencies:
@@ -32,37 +31,25 @@ cd Hospitalfinder
 npm install
 ```
 
-3. Set up your TomTom API key:
-- Get an API key from [TomTom Developer Portal](https://developer.tomtom.com/)
-- Replace the API key in `index.html`
-
-4. Start the server:
-```bash
-node proxy.js
+3. Create a `.env` file in the root directory and add your API keys:
+```env
+TOMTOM_API_KEY=your_tomtom_api_key
 ```
 
-5. Open `index.html` in your browser or use a local server.
+4. Start the development server:
+```bash
+npm start
+```
 
-## Features in Detail
+The application will be available at `http://localhost:5500`
 
-### Patient Registration
-- Comprehensive registration form
-- 21 common symptoms with severity indicators
-- Medical history tracking
-- Custom symptom input
-- Real-time form validation
+## Technology Stack
 
-### Hospital Finder
-- Interactive map interface
-- Real-time hospital locations
-- Traffic-aware routing
-- Detailed hospital information
-
-### Smart Chat
-- AI-powered responses
-- Wait time estimates
-- Symptom-based recommendations
-- Emergency guidance
+- Frontend: HTML5, CSS3, JavaScript (ES6+)
+- Maps & Navigation: TomTom Maps API
+- Real-time Updates: WebSocket
+- Backend Proxy: Node.js
+- User Data Storage: Local Storage with encryption
 
 ## Contributing
 
@@ -74,4 +61,10 @@ node proxy.js
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- TomTom for their Maps API
+- Emergency response guidelines from medical professionals
+- Open source community for various tools and libraries used in this project 

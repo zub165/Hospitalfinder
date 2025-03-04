@@ -36,9 +36,10 @@ const symptoms = {
 // Initialize registration form
 function initializeRegistration() {
     setupFormValidation();
-    setupSymptomSeverity();
+    setupSymptomBubbles();
     setupDatePicker();
     setupPhoneValidation();
+    loadSavedSymptoms();
 }
 
 // Setup form validation
@@ -62,33 +63,57 @@ function setupFormValidation() {
     });
 }
 
-// Setup symptom severity selection
-function setupSymptomSeverity() {
-    const symptomBubbles = document.querySelectorAll('.symptom-bubble');
-    symptomBubbles.forEach(bubble => {
-        const dots = bubble.querySelectorAll('.severity-dot');
-        dots.forEach(dot => {
-            dot.addEventListener('click', () => {
-                const level = parseInt(dot.getAttribute('data-level'));
-                updateSeverityDots(dots, level);
-                updateSymptomData(bubble.getAttribute('data-symptom'), level);
-            });
+// Setup symptom bubbles
+function setupSymptomBubbles() {
+    Object.entries(symptoms).forEach(([category, categorySymptoms]) => {
+        const container = document.getElementById(`${category}Symptoms`);
+        if (!container) return;
 
-            dot.addEventListener('mouseover', () => {
-                const level = parseInt(dot.getAttribute('data-level'));
-                previewSeverityDots(dots, level);
-            });
-
-            dot.addEventListener('mouseout', () => {
-                const currentLevel = getCurrentSeverityLevel(bubble.getAttribute('data-symptom'));
-                updateSeverityDots(dots, currentLevel);
-            });
+        categorySymptoms.forEach(symptom => {
+            const bubble = createSymptomBubble(symptom);
+            container.appendChild(bubble);
         });
     });
 }
 
-// Update severity dots based on selected level
-function updateSeverityDots(dots, level) {
+// Create a symptom bubble
+function createSymptomBubble(symptom) {
+    const bubble = document.createElement('div');
+    bubble.className = 'symptom-bubble';
+    bubble.id = `symptom-${symptom.id}`;
+    bubble.setAttribute('data-symptom-id', symptom.id);
+
+    const content = `
+        <div class="symptom-name">${symptom.name}</div>
+        <div class="severity-dots">
+            ${Array(10).fill().map((_, i) => `
+                <div class="severity-dot" data-level="${i + 1}" onclick="setSeverity('${symptom.id}', ${i + 1})"></div>
+            `).join('')}
+        </div>
+        <div class="symptom-description">${symptom.description}</div>
+    `;
+
+    bubble.innerHTML = content;
+    bubble.addEventListener('click', () => toggleSymptomSelection(symptom.id));
+
+    return bubble;
+}
+
+// Toggle symptom selection
+function toggleSymptomSelection(symptomId) {
+    const bubble = document.getElementById(`symptom-${symptomId}`);
+    if (!bubble) return;
+
+    const isSelected = bubble.classList.toggle('selected');
+    updateSymptomHistory();
+}
+
+// Set symptom severity
+function setSeverity(symptomId, level) {
+    const bubble = document.getElementById(`symptom-${symptomId}`);
+    if (!bubble) return;
+
+    const dots = bubble.querySelectorAll('.severity-dot');
     dots.forEach((dot, index) => {
         if (index < level) {
             dot.classList.add('active');
@@ -103,96 +128,95 @@ function updateSeverityDots(dots, level) {
             dot.classList.remove('active', 'mild', 'moderate', 'severe');
         }
     });
+
+    // Mark as selected when severity is set
+    bubble.classList.add('selected');
+    if (level >= 7) {
+        bubble.classList.add('critical');
+    } else {
+        bubble.classList.remove('critical');
+    }
+
+    updateSymptomHistory();
+    event.stopPropagation();
 }
 
-// Preview severity dots on hover
-function previewSeverityDots(dots, level) {
-    dots.forEach((dot, index) => {
-        if (index < level) {
-            dot.classList.add('preview');
-            if (index >= 7) {
-                dot.classList.add('severe');
-            } else if (index >= 4) {
-                dot.classList.add('moderate');
-            } else {
-                dot.classList.add('mild');
-            }
-        } else {
-            dot.classList.remove('preview', 'mild', 'moderate', 'severe');
+// Update symptom history
+function updateSymptomHistory() {
+    const historyContainer = document.getElementById('symptomHistory');
+    if (!historyContainer) return;
+
+    const selectedSymptoms = document.querySelectorAll('.symptom-bubble.selected');
+    const symptomsData = {};
+
+    selectedSymptoms.forEach(bubble => {
+        const symptomId = bubble.getAttribute('data-symptom-id');
+        const activeDots = bubble.querySelectorAll('.severity-dot.active');
+        symptomsData[symptomId] = activeDots.length;
+    });
+
+    localStorage.setItem('symptomsData', JSON.stringify(symptomsData));
+    renderSymptomHistory(symptomsData);
+}
+
+// Render symptom history
+function renderSymptomHistory(symptomsData) {
+    const historyContainer = document.getElementById('symptomHistory');
+    if (!historyContainer) return;
+
+    const items = Object.entries(symptomsData).map(([symptomId, severity]) => {
+        const symptom = findSymptomById(symptomId);
+        if (!symptom) return '';
+
+        return `
+            <div class="symptom-history-item">
+                <span class="symptom-name">${symptom.name}</span>
+                <div class="severity-indicator">
+                    ${Array(severity).fill('<div class="severity-dot active"></div>').join('')}
+                </div>
+            </div>
+        `;
+    });
+
+    historyContainer.innerHTML = items.length ? items.join('') : '<p class="text-muted">No symptoms selected</p>';
+}
+
+// Find symptom by ID
+function findSymptomById(symptomId) {
+    for (const category in symptoms) {
+        const found = symptoms[category].find(s => s.id === symptomId);
+        if (found) return found;
+    }
+    return null;
+}
+
+// Load saved symptoms
+function loadSavedSymptoms() {
+    const savedSymptoms = JSON.parse(localStorage.getItem('symptomsData') || '{}');
+    Object.entries(savedSymptoms).forEach(([symptomId, severity]) => {
+        const bubble = document.getElementById(`symptom-${symptomId}`);
+        if (bubble) {
+            bubble.classList.add('selected');
+            setSeverity(symptomId, severity);
         }
     });
 }
 
-// Get current severity level for a symptom
-function getCurrentSeverityLevel(symptomId) {
-    const symptomsData = JSON.parse(localStorage.getItem('symptomsData') || '{}');
-    return symptomsData[symptomId] || 0;
-}
-
-// Update symptom data in localStorage
-function updateSymptomData(symptomId, severity) {
-    const symptomsData = JSON.parse(localStorage.getItem('symptomsData') || '{}');
-    if (severity === 0) {
-        delete symptomsData[symptomId];
-    } else {
-        symptomsData[symptomId] = severity;
-    }
-    localStorage.setItem('symptomsData', JSON.stringify(symptomsData));
-    
-    // Update UI to reflect the change
-    const bubble = document.querySelector(`[data-symptom="${symptomId}"]`);
-    if (severity > 0) {
-        bubble.classList.add('selected');
-    } else {
-        bubble.classList.remove('selected');
-    }
-}
-
 // Add custom symptom
 function addCustomSymptom() {
-    const customSymptomInput = document.getElementById('customSymptom');
-    const symptomName = customSymptomInput.value.trim();
-    
-    if (!symptomName) return;
-    
-    const symptomId = 'custom-' + symptomName.toLowerCase().replace(/\s+/g, '-');
-    
-    // Check if symptom already exists
-    if (document.querySelector(`[data-symptom="${symptomId}"]`)) {
-        alert('This symptom has already been added.');
-        return;
-    }
-    
-    // Create new symptom bubble
-    const bubble = document.createElement('div');
-    bubble.className = 'symptom-bubble';
-    bubble.setAttribute('data-symptom', symptomId);
-    
-    bubble.innerHTML = `
-        <div class="symptom-name">${symptomName}</div>
-        <div class="severity-dots">
-            ${Array(10).fill().map((_, i) => `
-                <span class="severity-dot" data-level="${i + 1}"></span>
-            `).join('')}
-        </div>
-    `;
-    
-    // Add to Other Symptoms category
-    const otherSymptoms = document.querySelector('.symptom-category:last-child .symptom-bubbles');
-    otherSymptoms.appendChild(bubble);
-    
-    // Setup severity selection for new symptom
-    const dots = bubble.querySelectorAll('.severity-dot');
-    dots.forEach(dot => {
-        dot.addEventListener('click', () => {
-            const level = parseInt(dot.getAttribute('data-level'));
-            updateSeverityDots(dots, level);
-            updateSymptomData(symptomId, level);
-        });
-    });
-    
-    // Clear input
-    customSymptomInput.value = '';
+    const input = document.getElementById('customSymptom');
+    if (!input || !input.value.trim()) return;
+
+    const customSymptomId = 'custom-' + Date.now();
+    const customSymptom = {
+        id: customSymptomId,
+        name: input.value.trim(),
+        description: 'Custom symptom'
+    };
+
+    const bubble = createSymptomBubble(customSymptom);
+    document.getElementById('otherSymptoms').appendChild(bubble);
+    input.value = '';
 }
 
 // Setup date picker
@@ -341,17 +365,14 @@ async function submitRegistration() {
             dateOfBirth: formData.get('dateOfBirth'),
             gender: formData.get('gender'),
             email: formData.get('email'),
-            phone: formData.get('phone'),
-            whatsapp: formData.get('whatsapp'),
-            address: formData.get('address')
+            phone: formData.get('phone')
         },
         medicalHistory: {
             pastMedical: formData.get('pmh'),
             pastSurgical: formData.get('psh'),
             allergies: formData.get('allergies'),
             medications: formData.get('medications'),
-            socialHistory: formData.get('socialHistory'),
-            travelHistory: formData.get('travelHistory')
+            socialHistory: formData.get('socialHistory')
         },
         symptoms: symptomsData
     };
@@ -363,27 +384,29 @@ async function submitRegistration() {
         submitButton.disabled = true;
         submitButton.textContent = 'Submitting...';
 
-        // Submit data
-        const response = await fetch('/api/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(registrationData)
+        // Register user using UserProfileManager
+        const userProfile = await window.userProfileManager.registerUser({
+            ...registrationData.personalInfo,
+            medicalHistory: registrationData.medicalHistory,
+            currentSymptoms: registrationData.symptoms
         });
-
-        if (!response.ok) {
-            throw new Error('Registration failed');
-        }
 
         // Clear form and show success message
         form.reset();
         localStorage.removeItem('symptomsData');
-        showSuccessMessage('Registration successful!');
+        showSuccessMessage('Registration successful! Your profile has been created.');
+
+        // Trigger a custom event for successful registration
+        const event = new CustomEvent('userRegistered', { detail: userProfile });
+        document.dispatchEvent(event);
 
     } catch (error) {
         console.error('Registration error:', error);
-        showErrorMessage('Registration failed. Please try again.');
+        if (error.message === 'Email already registered') {
+            showErrorMessage('This email is already registered. Please use a different email or login.');
+        } else {
+            showErrorMessage('Registration failed. Please try again.');
+        }
     } finally {
         // Reset button state
         submitButton.disabled = false;
@@ -412,6 +435,140 @@ function createAlert(type, message) {
     alert.textContent = message;
     return alert;
 }
+
+// Generate registration information response
+function generateRegistrationInfo(clientQuery = '') {
+    const registrationSteps = {
+        required_documents: [
+            "Valid government-issued photo ID",
+            "Insurance card (if applicable)",
+            "List of current medications",
+            "Previous medical records (if available)",
+            "Emergency contact information"
+        ],
+        registration_methods: [
+            {
+                method: "Online Registration",
+                description: "Complete the form on our website",
+                estimated_time: "10-15 minutes",
+                available: "24/7"
+            },
+            {
+                method: "In-Person Registration",
+                description: "Visit our facility",
+                estimated_time: "20-30 minutes",
+                available: "Monday-Friday, 8 AM - 6 PM"
+            },
+            {
+                method: "Emergency Registration",
+                description: "Immediate registration for urgent cases",
+                estimated_time: "5-10 minutes",
+                available: "24/7"
+            }
+        ],
+        required_information: {
+            personal: [
+                "Full legal name",
+                "Date of birth",
+                "Gender",
+                "Contact information (phone, email)",
+                "Address"
+            ],
+            medical: [
+                "Current symptoms",
+                "Past medical history",
+                "Past surgical history",
+                "Current medications",
+                "Allergies",
+                "Social history"
+            ]
+        }
+    };
+
+    // Process client query to provide relevant information
+    function getRelevantInfo(query) {
+        query = query.toLowerCase();
+        let response = {
+            message: "",
+            relevantSteps: [],
+            additionalInfo: ""
+        };
+
+        // Check for specific query types
+        if (query.includes("document") || query.includes("bring")) {
+            response.message = "Required Documents:";
+            response.relevantSteps = registrationSteps.required_documents;
+            response.additionalInfo = "Please bring original documents or clear copies.";
+        }
+        else if (query.includes("online") || query.includes("website")) {
+            response.message = "Online Registration Process:";
+            response.relevantSteps = [
+                "Visit our website",
+                "Click on the Registration tab",
+                "Fill out all required fields",
+                "Upload necessary documents",
+                "Submit the form"
+            ];
+            response.additionalInfo = "Estimated completion time: 10-15 minutes";
+        }
+        else if (query.includes("emergency")) {
+            response.message = "Emergency Registration:";
+            response.relevantSteps = [
+                "Proceed directly to the emergency department",
+                "Basic information will be collected",
+                "Treatment will begin immediately",
+                "Additional registration details can be completed later"
+            ];
+            response.additionalInfo = "Available 24/7 for urgent cases";
+        }
+        else {
+            // Default comprehensive response
+            response.message = "Registration Information:";
+            response.relevantSteps = [
+                "Choose your preferred registration method:",
+                "- Online: Available 24/7 through our website",
+                "- In-Person: Visit during business hours",
+                "- Emergency: Available 24/7 for urgent cases",
+                "",
+                "Required Documents:",
+                ...registrationSteps.required_documents.map(doc => `- ${doc}`),
+                "",
+                "Required Information:",
+                "Personal:",
+                ...registrationSteps.required_information.personal.map(info => `- ${info}`),
+                "Medical:",
+                ...registrationSteps.required_information.medical.map(info => `- ${info}`)
+            ];
+            response.additionalInfo = "For assistance, contact our help desk at [CONTACT_INFO]";
+        }
+
+        return response;
+    }
+
+    return getRelevantInfo(clientQuery);
+}
+
+// Handle registration inquiry
+function handleRegistrationInquiry(clientQuery) {
+    const info = generateRegistrationInfo(clientQuery);
+    
+    // Format response for display
+    let formattedResponse = `
+        <div class="registration-info">
+            <h4>${info.message}</h4>
+            <ul class="registration-steps">
+                ${info.relevantSteps.map(step => `<li>${step}</li>`).join('')}
+            </ul>
+            ${info.additionalInfo ? `<p class="additional-info">${info.additionalInfo}</p>` : ''}
+        </div>
+    `;
+
+    return formattedResponse;
+}
+
+// Example usage in chat.js or other interface:
+// const response = handleRegistrationInquiry("What documents do I need?");
+// displayResponse(response);
 
 // Initialize when document is ready
 document.addEventListener('DOMContentLoaded', initializeRegistration); 

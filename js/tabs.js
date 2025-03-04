@@ -1,70 +1,141 @@
-// Tab components mapping
+// Tab components configuration
 const tabComponents = {
-    'chat-tab': './components/chat.html',
-    'registration-tab': './components/registration.html',
-    'records-tab': './components/records.html',
-    'hospital-tab': './components/hospital.html',
-    'directions-tab': './components/directions.html'
+    'chat-tab': 'components/chat.html',
+    'hospital-tab': 'components/hospital.html',
+    'registration-tab': 'components/registration.html',
+    'records-tab': 'components/records.html',
+    'directions-tab': 'components/directions.html'
 };
 
 // Global variable to track if TomTom is loaded
 let isTomTomLoaded = false;
-
-// Function to get the correct path for components
-function getComponentPath(path) {
-    const baseUrl = window.baseUrl || '';
-    return `${baseUrl}${path}`;
-}
+let isTomTomLoading = false;
+let tomtomLoadPromise = null;
 
 // Function to load TomTom SDK
 async function loadTomTomSDK() {
     if (isTomTomLoaded) return Promise.resolve();
+    if (isTomTomLoading) return tomtomLoadPromise;
 
-    return new Promise((resolve, reject) => {
-        // Load CSS
-        const cssLink = document.createElement('link');
-        cssLink.rel = 'stylesheet';
-        cssLink.type = 'text/css';
-        cssLink.href = 'https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.1/maps/maps.css';
-        document.head.appendChild(cssLink);
+    isTomTomLoading = true;
+    tomtomLoadPromise = new Promise((resolve, reject) => {
+        try {
+            // Load CSS
+            const cssLink = document.createElement('link');
+            cssLink.rel = 'stylesheet';
+            cssLink.type = 'text/css';
+            cssLink.href = 'https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.1/maps/maps.css';
+            document.head.appendChild(cssLink);
 
-        // Load Maps SDK
-        const mapsScript = document.createElement('script');
-        mapsScript.src = 'https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.1/maps/maps-web.min.js';
-        
-        // Load Services SDK
-        const servicesScript = document.createElement('script');
-        servicesScript.src = 'https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.1/services/services-web.min.js';
+            // Load Maps SDK
+            const mapsScript = document.createElement('script');
+            mapsScript.src = 'https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.1/maps/maps-web.min.js';
+            
+            // Load Services SDK
+            const servicesScript = document.createElement('script');
+            servicesScript.src = 'https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.1/services/services-web.min.js';
 
-        // Handle loading sequence
-        mapsScript.onload = () => {
-            document.head.appendChild(servicesScript);
-        };
+            // Handle loading sequence
+            mapsScript.onload = () => {
+                document.head.appendChild(servicesScript);
+            };
 
-        servicesScript.onload = () => {
-            isTomTomLoaded = true;
-            resolve();
-        };
+            servicesScript.onload = () => {
+                isTomTomLoaded = true;
+                isTomTomLoading = false;
+                resolve();
+            };
 
-        servicesScript.onerror = mapsScript.onerror = () => {
-            reject(new Error('Failed to load TomTom SDK'));
-        };
+            servicesScript.onerror = mapsScript.onerror = (error) => {
+                isTomTomLoading = false;
+                console.error('Failed to load TomTom SDK:', error);
+                reject(new Error('Failed to load TomTom SDK. Please check your internet connection and try again.'));
+            };
 
-        document.head.appendChild(mapsScript);
+            // Set loading timeout
+            setTimeout(() => {
+                if (!isTomTomLoaded) {
+                    isTomTomLoading = false;
+                    reject(new Error('TomTom SDK loading timeout. Please try again.'));
+                }
+            }, 20000); // 20 second timeout
+
+            document.head.appendChild(mapsScript);
+        } catch (error) {
+            isTomTomLoading = false;
+            reject(error);
+        }
     });
+
+    return tomtomLoadPromise;
 }
 
-// Load component content
-async function loadComponent(tabId) {
-    const componentPath = getComponentPath(tabComponents[tabId]);
+// Function to load tab content
+async function loadTabContent(tabId) {
+    console.log('Loading content for tab:', tabId);
     try {
-        const response = await fetch(componentPath);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const tabPane = document.getElementById(tabId);
+        if (!tabPane) {
+            console.error('Tab pane not found:', tabId);
+            return;
+        }
+
+        // Always load content for now (remove the data-loaded check temporarily)
+        const response = await fetch(tabComponents[tabId]);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const content = await response.text();
-        document.getElementById(tabId).innerHTML = content;
+        console.log('Content loaded:', content.substring(0, 100) + '...');
+        
+        // Insert the content
+        tabPane.innerHTML = content;
+        
+        // Make sure the tab is visible
+        tabPane.classList.add('show', 'active');
+        
+        // Initialize specific tab functionality
+        console.log('Initializing tab functionality for:', tabId);
+        switch(tabId) {
+            case 'chat-tab':
+                if (typeof initializeChat === 'function') {
+                    initializeChat();
+                }
+                break;
+            case 'hospital-tab':
+                if (typeof initializeMap === 'function') {
+                    setTimeout(initializeMap, 100);
+                }
+                break;
+            case 'directions-tab':
+                if (typeof initializeDirections === 'function') {
+                    setTimeout(initializeDirections, 100);
+                }
+                break;
+            case 'registration-tab':
+                if (typeof initializeRegistration === 'function') {
+                    initializeRegistration();
+                }
+                break;
+            case 'records-tab':
+                if (typeof initializeRecords === 'function') {
+                    initializeRecords();
+                }
+                break;
+        }
     } catch (error) {
-        console.error('Error loading component:', error);
-        document.getElementById(tabId).innerHTML = `<div class="alert alert-danger">Error loading content. Please try again.</div>`;
+        console.error('Error loading tab content:', error);
+        const tabPane = document.getElementById(tabId);
+        if (tabPane) {
+            tabPane.innerHTML = `
+                <div class="alert alert-danger">
+                    <h4 class="alert-heading">Error loading content</h4>
+                    <p>${error.message}</p>
+                    <hr>
+                    <p class="mb-0">Please try refreshing the page or contact support if the problem persists.</p>
+                </div>
+            `;
+        }
     }
 }
 
@@ -108,15 +179,44 @@ async function handleTabChange(event) {
             
             // Initialize map if needed
             if (targetTab === '#hospital-tab' && typeof initializeMap === 'function') {
-                initializeMap();
+                setTimeout(() => {
+                    try {
+                        initializeMap();
+                    } catch (error) {
+                        console.error('Failed to initialize map:', error);
+                        showMapError(targetTab);
+                    }
+                }, 100);
             }
         } catch (error) {
             console.error('Failed to load TomTom SDK:', error);
-            const errorMessage = document.createElement('div');
-            errorMessage.className = 'alert alert-danger';
-            errorMessage.textContent = 'Failed to load map. Please try again later.';
-            document.querySelector(targetTab).prepend(errorMessage);
+            showMapError(targetTab);
         }
+    }
+}
+
+// Show map error message
+function showMapError(targetTab) {
+    const errorMessage = document.createElement('div');
+    errorMessage.className = 'alert alert-danger';
+    errorMessage.innerHTML = `
+        <h4 class="alert-heading">Map Loading Error</h4>
+        <p>We encountered an error while loading the map. This might be due to:</p>
+        <ul>
+            <li>Internet connection issues</li>
+            <li>Ad blockers or privacy settings</li>
+            <li>Temporary service disruption</li>
+        </ul>
+        <hr>
+        <p class="mb-0">Please try refreshing the page or check your internet connection.</p>
+        <button class="btn btn-outline-danger mt-2" onclick="location.reload()">
+            <i class="fas fa-sync-alt"></i> Refresh Page
+        </button>
+    `;
+    
+    const container = document.querySelector(targetTab);
+    if (container) {
+        container.prepend(errorMessage);
     }
 }
 
@@ -124,19 +224,10 @@ async function handleTabChange(event) {
 document.addEventListener('DOMContentLoaded', function() {
     initializeTheme();
     
-    // Load initial active tab
-    const activeTab = document.querySelector('.tab-pane.active');
-    if (activeTab) {
-        loadComponent(activeTab.id);
-    }
-
-    // Setup tab change listeners
-    const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
-    tabs.forEach(tab => {
-        tab.addEventListener('shown.bs.tab', function (event) {
-            const targetId = event.target.getAttribute('data-bs-target').substring(1);
-            loadComponent(targetId);
-        });
+    // Add tab change listener
+    const tabElements = document.querySelectorAll('[data-bs-toggle="tab"]');
+    tabElements.forEach(tab => {
+        tab.addEventListener('shown.bs.tab', handleTabChange);
     });
 });
 

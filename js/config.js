@@ -22,4 +22,6 @@ const config = {
 Object.freeze(config);
 
 // Export configuration
-window.AppConfig = config; 
+window.AppConfig = config;
+
+window.triggerERDataExport('admin@example.com'); 
