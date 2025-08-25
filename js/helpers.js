@@ -293,3 +293,15 @@ window.ERHelpers = {
     getTrafficConditions,
     getWeatherConditions
 }; 
+
+// Lightweight feedback storage
+window.submitHospitalFeedback = function(hospitalName, delta) {
+    try {
+        const key = 'hospitalFeedback';
+        const map = JSON.parse(localStorage.getItem(key) || '{}');
+        map[hospitalName] = (map[hospitalName] || 0) + delta;
+        localStorage.setItem(key, JSON.stringify(map));
+    } catch (e) {
+        console.warn('Feedback save failed', e);
+    }
+};

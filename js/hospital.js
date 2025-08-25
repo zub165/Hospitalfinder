@@ -258,20 +258,65 @@ function addMarkersToMap(hospitals) {
     markers = [];
 
     // Add new markers
+    const bounds = new tt.LngLatBounds();
+
     hospitals.forEach(hospital => {
         const marker = new tt.Marker()
             .setLngLat([hospital.position.lon, hospital.position.lat])
             .addTo(map);
 
-        const popup = new tt.Popup({ offset: 30 })
-            .setHTML(`
+        const popup = new tt.Popup({ offset: 30 });
+
+        // Base popup content
+        const baseHtml = () => `
+            <div>
                 <strong>${hospital.poi.name}</strong><br>
-                ${hospital.address.freeformAddress}
-            `);
+                ${hospital.address.freeformAddress}<br/>
+                <div id="er-wait-${hospital.id || `${hospital.position.lat}-${hospital.position.lon}`}" style="margin-top:6px;font-size:12px;color:#444;">
+                    Estimating ER wait...
+                </div>
+                <div style="margin-top:6px;">
+                    <button onclick="submitHospitalFeedback('${hospital.poi.name.replace(/'/g, "\'")}', 1)" class="btn btn-sm btn-outline-success">👍</button>
+                    <button onclick="submitHospitalFeedback('${hospital.poi.name.replace(/'/g, "\'")}', -1)" class="btn btn-sm btn-outline-danger ms-1">👎</button>
+                </div>
+            </div>
+        `;
+
+        popup.setHTML(baseHtml());
 
         marker.setPopup(popup);
         markers.push(marker);
+
+        // Track bounds
+        bounds.extend([hospital.position.lon, hospital.position.lat]);
+
+        // Asynchronously fetch ER wait estimate and update popup
+        if (window.ERHelpers?.estimateERWaitTime) {
+            const enrichedHospital = {
+                ...hospital,
+                averageCapacity: hospital.averageCapacity || 30
+            };
+            window.ERHelpers.estimateERWaitTime(enrichedHospital).then(est => {
+                const waitElId = `er-wait-${hospital.id || `${hospital.position.lat}-${hospital.position.lon}`}`;
+                const waitEl = document.getElementById(waitElId);
+                if (waitEl) {
+                    waitEl.textContent = `Estimated ER wait: ${est.estimatedWait} min (confidence: ${est.confidence})`;
+                } else {
+                    // If popup not mounted yet, refresh HTML
+                    popup.setHTML(baseHtml().replace('Estimating ER wait...', `Estimated ER wait: ${est.estimatedWait} min (confidence: ${est.confidence})`));
+                }
+            }).catch(() => {
+                const waitElId = `er-wait-${hospital.id || `${hospital.position.lat}-${hospital.position.lon}`}`;
+                const waitEl = document.getElementById(waitElId);
+                if (waitEl) waitEl.textContent = 'ER wait unavailable';
+            });
+        }
     });
+
+    // Fit map to show all hospitals if any
+    if (hospitals.length > 0) {
+        map.fitBounds(bounds, { padding: 50, maxZoom: 14 });
+    }
 }
 
 function selectHospital(lat, lon, name) {
