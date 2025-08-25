@@ -50,7 +50,8 @@
             await fetch(`${STORAGE_API_BASE}/storage/save`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
+                // Some backends expect a { payload } wrapper; send both-compatible shape
+                body: JSON.stringify({ payload, ...payload }),
                 mode: 'cors'
             });
         } catch (e) {
@@ -68,8 +69,9 @@
             });
             if (!res.ok) return;
             const json = await res.json();
-            if (json && json.data && typeof json.data === 'object') {
-                Object.entries(json.data).forEach(([k, v]) => {
+            const dataObj = json && (json.data || (json.payload && json.payload.data));
+            if (dataObj && typeof dataObj === 'object') {
+                Object.entries(dataObj).forEach(([k, v]) => {
                     if (STORAGE_KEYS.includes(k) && typeof v === 'string') {
                         localStorage.setItem(k, v);
                     }
