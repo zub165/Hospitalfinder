@@ -318,7 +318,7 @@ function calculateRoute(destLat, destLon) {
             
             try {
                 const response = await fetch(
-                    `https://api.tomtom.com/routing/1/calculateRoute/${startLat},${startLon}:${destLat},${destLon}/json?key=${TOMTOM_API_KEY}`
+                    `https://api.tomtom.com/routing/1/calculateRoute/${startLat},${startLon}:${destLat},${destLon}/json?key=${window.tomtomConfig.apiKey}`
                 );
                 const data = await response.json();
 

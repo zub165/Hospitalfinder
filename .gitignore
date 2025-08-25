@@ -1,29 +1,6 @@
-# Dependencies
 node_modules/
-package-lock.json
-
-# Environment variables
-.env
-
-# IDE files
-.vscode/
-.idea/
-
-# OS generated files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# SSL certificates
-*.pem
-*.key
-*.crt
-
-# Backup files
-*copy.html
-*-*.html
-index[0-9].html 
+.env
+.vscode/
+dist/
+build/
