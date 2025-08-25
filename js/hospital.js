@@ -152,8 +152,8 @@ async function findNearbyHospitals(lat, lon) {
         currentSearchRequest = controller;
 
         const response = await fetch(
-            `${config.apiBaseUrl}/search/2/poiSearch/hospital.json?lat=${lat}&lon=${lon}&radius=5000&limit=10`,
-            { signal: controller.signal }
+            `https://api.tomtom.com/search/2/poiSearch/hospital.json?key=${window.tomtomApiKey}&lat=${lat}&lon=${lon}&radius=5000&limit=10`,
+            { signal: controller.signal, headers: { 'Accept': 'application/json' }, mode: 'cors' }
         );
 
         if (!response.ok) {
